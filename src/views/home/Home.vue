@@ -1,7 +1,9 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-  <scroll class="scroll" ref="scrolls" :probe-type="3" @scroll="contentscroll"> 
+  <scroll class="scroll" ref="scrolls"
+   :probe-type="3" @scroll="contentscroll"
+   :pull-up-load=true @pullingUp="loadMore"> 
    <home-swiper :banners="banners"/>
    <home-recommend :recommend="recommend"/>
    <home-feature/>
@@ -85,8 +87,11 @@ export default {
        this.$refs.scrolls.scroll.scrollTo(0,0,500)
      },
      contentscroll(position){
-       console.log(position)
          this.isShowBack=position.y<-1000
+     },
+     loadMore(){
+       this.getHomeGoods(this.currentType)
+       this.$refs.scrolls.scroll.refresh()
      },
 
       /*
@@ -107,6 +112,8 @@ export default {
           // console.log(res.data[type].page[page].list)
          this.goods[type].list.push(...res.data[type].page[page].list);
          this.goods[type].page+=1
+
+         this.$refs.scrolls.scroll.finishPullUp()
       })
       }
     }
@@ -134,6 +141,7 @@ export default {
   top: 44px;
 }
 .scroll{
+  top: 44px;
   height: calc(100% - 49px);
   overflow: hidden;
 }

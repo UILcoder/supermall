@@ -14,7 +14,11 @@ export default {
     probeType:{
     type:Number,
     default:0
-    } 
+    }, 
+    pullUpLoad:{
+      type:Boolean,
+      default:false
+    }
   },
   data () {
     return {
@@ -23,11 +27,17 @@ export default {
   },
   mounted () {
     this.scroll=new BScroll(this.$refs.scroll,{
-      probeType:this.probeType
+      probeType:this.probeType,
+      click:true,
+      pullUpLoad:this.pullUpLoad
 
     })
     this.scroll.on('scroll',(position)=>{
       this.$emit("scroll",position)
+    }),
+    this.scroll.on("pullingUp",()=>{
+      this.$emit('pullingUp')
+      console.log('bbb')
     })
   }
   
