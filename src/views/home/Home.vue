@@ -1,14 +1,14 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <tab-control class="tab-control" :titles='["流行" ,"新款","精选"]'  @tabclick="tabclick" ref="tabControl1" v-show="istabControl"/>
   <scroll class="scroll" ref="scrolls"
    :probe-type="3" @scroll="contentscroll"
-   :pull-up-load=true @pullingUp="loadMore"> 
-   <home-swiper :banners="banners"/>
+   :pull-up-load="pullUpLoad" @pullingUp="loadMore"> 
+   <home-swiper :banners="banners" @swiperLoadImage="swiperLoadImage"/>
    <home-recommend :recommend="recommend"/>
    <home-feature/>
-   <tab-control class="tab-control" 
-   :titles='["流行" ,"新款","精选"]'  @tabclick="tabclick"/>
+   <tab-control :titles='["流行" ,"新款","精选"]'  @tabclick="tabclick" ref="tabControl2"/>
    <goods :goods="showGoods"/>
    </scroll>
    <back-top @click.native="backclick" v-show="isShowBack"/>
@@ -21,6 +21,7 @@ import HomeSwiper from './childenHome/HomeSwiper'
 import HomeRecommend from './childenHome/HomeRecommend'
 import HomeFeature from './childenHome/HomeFeature'
 import {getHomeMulitidata,getHomeGoods} from 'network/home'
+import {debounce} from 'common/utils'
 
 import NavBar from 'components/common/navbar/NavBar'
 import scroll from 'components/common/scroll/scroll'
@@ -52,7 +53,11 @@ export default {
           'sell':{page:0,list:[]}
         },
         currentType:'pop',
-        isShowBack:false
+        isShowBack:false,
+        pullUpLoad:true,
+        tabOffetTop:0,
+        istabControl:false,
+        saveY:0
       }
     },
     created () {
@@ -63,10 +68,27 @@ export default {
       this.getHomeGoods("pop"),
       this.getHomeGoods("news"),
       this.getHomeGoods("sell")
-     
-
-     
     },
+    mounted () {
+      //调用scroll中的refresh()
+      // console.log(this.$refs.scrolls.refresh)
+      const refresh=debounce(this.$refs.scrolls.refresh,500)
+       //3.监听goodsitem中的图片加载
+      this.$bus.$on("imgload",()=>{
+        // console.log(refresh)
+         refresh()
+
+      })
+    },
+       activated () {
+       this.$refs.scrolls.scrollTo(0,this.saveY,0);
+       this.$refs.scrolls.refresh();
+       console.log("actived",this.saveY)
+     },
+     deactivated () {
+       this.saveY=this.$refs.scrolls.getScrollY();
+       console.log("chf")
+     },
     computed: {
       showGoods(){
         return  this.goods[this.currentType].list
@@ -82,16 +104,26 @@ export default {
          case 1: this.currentType='news' ;break;
          case 2: this.currentType='sell' ;break;
        }
+       this.$refs.tabControl1.count=index;
+       this.$refs.tabControl2.count=index
      },
      backclick(){
-       this.$refs.scrolls.scroll.scrollTo(0,0,500)
+       this.$refs.scrolls.scrollTo(0,0,500)
      },
      contentscroll(position){
+       //判断backTop是否出现
          this.isShowBack=position.y<-1000
+       //判断tabControl是否吸顶（position:fixed)
+       this.istabControl=(position.y)<-this.tabOffetTop
      },
      loadMore(){
        this.getHomeGoods(this.currentType)
-       this.$refs.scrolls.scroll.refresh()
+      //  this.$refs.scrolls.refresh()
+     },
+     swiperLoadImage(){
+       this.tabOffetTop=this.$refs.tabControl2.$el.offsetTop
+       console.log(this.tabOffetTop);
+       console.log(this.$refs.tabControl2)
      },
 
       /*
@@ -111,9 +143,10 @@ export default {
         getHomeGoods(type,page).then(res=>{
           // console.log(res.data[type].page[page].list)
          this.goods[type].list.push(...res.data[type].page[page].list);
-         this.goods[type].page+=1
-
-         this.$refs.scrolls.scroll.finishPullUp()
+         this.goods[type].page+=1;
+         
+         //完成下来加载更多
+         this.$refs.scrolls.finishPullUp()
       })
       }
     }
@@ -123,25 +156,22 @@ export default {
 
 <style scope>
 #home{
-  margin-top: 44px;
   height: 100vh;
+  position: relative;
 }
 .home-nav{
   background-color: var( --color-tint);
   color: #fff;
   font-size: 20px;
-
-  position: fixed;
-  right: 0;
-  left: 0;
-  top: 0;
-  z-index: 9;
 }
 .tab-control{
-  top: 44px;
+  position: relative;
+  z-index: 10;
+  top:-1px
 }
 .scroll{
-  top: 44px;
+ position: absolute;   
+  top:44px;
   height: calc(100% - 49px);
   overflow: hidden;
 }

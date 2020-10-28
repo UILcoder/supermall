@@ -17,7 +17,7 @@ export default {
 .nav-bar{
   display: flex;
   height: 44px;
-  box-shadow: 0  1px 1px rgba(100, 100, 100, .1);
+  box-shadow: 0  1px 1px rgba(238, 235, 235, 0.1);
   text-align: center;
   line-height: 44px;
 }

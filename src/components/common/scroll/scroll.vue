@@ -34,11 +34,26 @@ export default {
     })
     this.scroll.on('scroll',(position)=>{
       this.$emit("scroll",position)
-    }),
-    this.scroll.on("pullingUp",()=>{
-      this.$emit('pullingUp')
-      console.log('bbb')
     })
+    if(this.pullUpLoad){
+      this.scroll.on("pullingUp",()=>{
+        this.$emit('pullingUp')
+      })
+    }
+  },
+  methods: {
+    scrollTo(x,y,delay){
+      this.scroll.scrollTo(x,y,delay)
+    },
+    finishPullUp(){
+      this.scroll&&this.scroll.finishPullUp()
+    },
+    refresh(){
+        this.scroll && this.scroll.refresh()
+      },
+      getScrollY(){
+        return this.scroll?this.scroll.y:0
+      }
   }
   
 

@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import  axios from 'axios'
 export default {
   name:'tabControl',
   props: {
@@ -34,7 +35,6 @@ export default {
 
 }
 </script>
-
 <style>
 .tab-control{
   height: 40px;
@@ -42,8 +42,6 @@ export default {
   text-align: center;
   line-height: 40px;
   background-color: #fff;
-  position: sticky;
-  z-index: 10;
 }
 .tab-control-item{
   flex: 1;
