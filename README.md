@@ -20,4 +20,10 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### 项目展示
 
+<<<<<<< HEAD
 ![](https://raw.githubusercontent.com/UILcoder/supermall/master/src/assets/img/itemimg/image-20201028102411799.png)
+=======
+!(https://raw.githubusercontent.com/UILcoder/supermall/master/src/assets/img/itemimg/image-20201028102411799.png)
+>>>>>>> 78dbc38f858c78c81c04e49614dbe46433876acd
+
+![image-20201028114724393](C:\Users\lenovo\Desktop\supermall\src\assets\img\itemimg\image-20201028114724393.png)
