@@ -20,5 +20,3 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### 项目展示
 
-![](https://raw.githubusercontent.com/UILcoder/supermall/master/src/assets/img/itemimg/image-20201028102411799.png)
-![](https://raw.githubusercontent.com/UILcoder/supermall/master/src/assets/img/itemimg/image-20201028102411799.png)
